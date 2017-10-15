@@ -93,6 +93,7 @@ public:
 
 	void NoteWeaponFired( void );
 
+	void Switch(void);
 	void ResetAnimation( void );
 	void SetPlayerModel( void );
 	void SetPlayerTeamModel( void );

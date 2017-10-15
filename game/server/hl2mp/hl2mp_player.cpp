@@ -199,36 +199,56 @@ void CHL2MP_Player::GiveDefaultItems( void )
 	EquipSuit();
 
 	CBasePlayer::GiveAmmo( 255,	"Pistol");
-	CBasePlayer::GiveAmmo( 45,	"SMG1");
-	CBasePlayer::GiveAmmo( 1,	"grenade" );
-	CBasePlayer::GiveAmmo( 6,	"Buckshot");
-	CBasePlayer::GiveAmmo( 6,	"357" );
-
-	if ( GetPlayerModelType() == PLAYER_SOUNDS_METROPOLICE || GetPlayerModelType() == PLAYER_SOUNDS_COMBINESOLDIER )
-	{
-		GiveNamedItem( "weapon_stunstick" );
+	if (HL2MPRules()->IsAlienMode()){
+				//WE ASUME THERE IS ONLY ONE WEAPON FOR ALIEN
+			GiveNamedItem("weapon_crowbar");
+		
 	}
-	else if ( GetPlayerModelType() == PLAYER_SOUNDS_CITIZEN )
-	{
-		GiveNamedItem( "weapon_crowbar" );
-	}
-	
-	GiveNamedItem( "weapon_pistol" );
-	GiveNamedItem( "weapon_smg1" );
-	GiveNamedItem( "weapon_frag" );
-	GiveNamedItem( "weapon_physcannon" );
+	else{
+		/*CBasePlayer::GiveAmmo( 255,	"Pistol");
+		CBasePlayer::GiveAmmo( 45,	"SMG1");
+		CBasePlayer::GiveAmmo( 1,	"grenade" );
+		CBasePlayer::GiveAmmo( 6,	"Buckshot");
+		CBasePlayer::GiveAmmo( 6,	"357" );
 
-	const char *szDefaultWeaponName = engine->GetClientConVarValue( engine->IndexOfEdict( edict() ), "cl_defaultweapon" );
+		*/
+		CBasePlayer::GiveAmmo(45, "SMG1");
+		CBasePlayer::GiveAmmo(1, "grenade");
+		CBasePlayer::GiveAmmo(6, "Buckshot");
+		CBasePlayer::GiveAmmo(6, "357");
 
-	CBaseCombatWeapon *pDefaultWeapon = Weapon_OwnsThisType( szDefaultWeaponName );
+		if (GetPlayerModelType() == PLAYER_SOUNDS_METROPOLICE || GetPlayerModelType() == PLAYER_SOUNDS_COMBINESOLDIER)
+		{
+			GiveNamedItem("weapon_stunstick");
+		}
+		else if (GetPlayerModelType() == PLAYER_SOUNDS_CITIZEN)
+		{
+			GiveNamedItem("weapon_crowbar");
+		}
 
-	if ( pDefaultWeapon )
-	{
-		Weapon_Switch( pDefaultWeapon );
-	}
-	else
-	{
-		Weapon_Switch( Weapon_OwnsThisType( "weapon_physcannon" ) );
+		GiveNamedItem("weapon_pistol");
+		/*	GiveNamedItem( "weapon_pistol" );
+		 GiveNamedItem( "weapon_smg1" );
+		 GiveNamedItem( "weapon_frag" );
+		 GiveNamedItem( "weapon_physcannon" );
+
+		 */
+		GiveNamedItem("weapon_smg1");
+		GiveNamedItem("weapon_frag");
+		// GiveNamedItem("weapon_physcannon");
+
+		const char *szDefaultWeaponName = engine->GetClientConVarValue(engine->IndexOfEdict(edict()), "cl_defaultweapon");
+
+		CBaseCombatWeapon *pDefaultWeapon = Weapon_OwnsThisType(szDefaultWeaponName);
+
+		if (pDefaultWeapon)
+		{
+			Weapon_Switch(pDefaultWeapon);
+		}
+		else
+		{
+			Weapon_Switch(Weapon_OwnsThisType("weapon_physcannon"));
+		}
 	}
 }
 
@@ -554,7 +574,73 @@ void CHL2MP_Player::PreThink( void )
 	//Reset bullet force accumulator, only lasts one frame
 	m_vecTotalBulletForce = vec3_origin;
 	SetLocalAngles( vOldAngles );
+	if (m_afButtonPressed & IN_SWITCH)
+		 {
+		if (IsAlive() &&
+			!IsInAVehicle())
+			 {
+			Switch();
+			}
+		}
 }
+// }
+void CHL2MP_Player::Switch(void){
+	Msg("Decay Switch\n");
+			//if(!HL2MPRules()->IsSwitchLocked()){ //Ayeeeee
+		
+		if (!IsAlive()) //Double-Check
+		 return;
+	if (HL2MPRules()->IsSwitchLocked()){
+		Msg("Switch Is Locked\n");
+		return;
+		
+	}
+	//HACK HACK HACK: This Thing made for 2 players in mind, running this on more then 2 players might destroy the universe!1!1!!
+		for (int i = 0; i < MAX_PLAYERS; i++) //Get All Players
+		 {
+		CBasePlayer *pPlayer = UTIL_PlayerByIndex(i);
+		
+			if (pPlayer){
+			if (pPlayer->GetTeam() != GetTeam() && pPlayer->IsAlive()){ //Triple-Check Cuz Why Not?
+				Msg("Switch"); //TODO: Smooth Position Changes Out Like How Portal Did, I mean dont move the camera from interiors like wall's, just teleport it like in the GoldSRC
+				/*QAngle backupAngle = GetAbsAngles(); //Player 1's Positions
+				Vector backupOrigin = GetAbsOrigin();
+				QAngle backupAngle1 = pPlayer->GetAbsAngles(); //Player 2's Positions
+				Vector backupOrigin1 = pPlayer->GetAbsOrigin();
+				pPlayer->SetAbsAngles(backupAngle); //Mix em up
+				pPlayer->SetAbsOrigin(backupOrigin);
+				SetAbsOrigin(backupOrigin1);
+				SetAbsAngles(backupAngle1);*/
+				Vector backupOrigin = GetLocalOrigin();
+				QAngle backupAngle = GetLocalAngles();
+				Vector backupVelocity = GetLocalVelocity();
+				Vector backupOrigin1 = pPlayer->GetLocalOrigin();
+				QAngle backupAngle1 = pPlayer->GetLocalAngles();
+				Vector backupVelocity1 = pPlayer->GetLocalVelocity();
+
+				pPlayer->Teleport(&backupOrigin, &backupAngle, &backupVelocity);
+				Teleport(&backupOrigin1, &backupAngle1, &backupVelocity1);
+				
+					int backupTeam = GetTeamNumber(); //TODO: I can't remember why I add this but I think this was about Bonus Alien Levels
+				int backupTeam1 = pPlayer->GetTeamNumber();
+				pPlayer->ChangeTeam(backupTeam);
+				ChangeTeam(backupTeam1);
+				
+										//IF SOMEONE SOLVED HOW TO CLONE ENTIRE AMMO AND WEAPON ARRAY TO ANOTHER PLAYER
+										//PLEASE CALL ME
+					
+					
+					return; //:(
+				
+			}
+			
+				
+		}
+		}
+	
+}
+/////////////////////////////////////////////////////////////////////////
+
 
 void CHL2MP_Player::PostThink( void )
 {
@@ -848,6 +934,13 @@ bool CHL2MP_Player::BumpWeapon( CBaseCombatWeapon *pWeapon )
 	// Can I have this weapon type?
 	if ( !IsAllowedToPickupWeapons() )
 		return false;
+	
+		if (HL2MPRules()->IsAlienMode()){ //DECAY, No one wants to see a vortigrunt using a RPG. Edit: Well it also prevents em using their claws, Who Would Have Know.
+		
+			if (strcmp(pWeapon->GetClassname(), "weapon_crowbar")) //Insert Your Favorite Vortigrunt Weapon Here
+			 return false;
+		
+	}
 
 	if ( pOwner || !Weapon_CanUse( pWeapon ) || !g_pGameRules->CanHavePlayerItem( this, pWeapon ) )
 	{
@@ -937,7 +1030,7 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 
 	if ( bKill == true )
 	{
-		CommitSuicide();
+		//CommitSuicide();
 	}
 }
 

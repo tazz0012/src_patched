@@ -1688,9 +1688,6 @@
     <ClInclude Include="hl2\npc_stalker.h">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClInclude>
-    <ClInclude Include="hl2\npc_strider.h">
-      <Filter>Source Files\HL2 DLL</Filter>
-    </ClInclude>
     <ClInclude Include="npc_talker.h">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClInclude>
@@ -3187,9 +3184,6 @@
     <ClCompile Include="hl2\npc_stalker.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
-    <ClCompile Include="hl2\npc_strider.cpp">
-      <Filter>Source Files\HL2 DLL</Filter>
-    </ClCompile>
     <ClCompile Include="npc_talker.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
@@ -3556,6 +3550,7 @@
     <ClCompile Include="toolframework_server.cpp">
       <Filter>Tools Framework</Filter>
     </ClCompile>
+    <ClCompile Include="hl2\npc_strider.cpp" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

@@ -43,6 +43,22 @@ class CHL2MPGameRulesProxy : public CGameRulesProxy
 public:
 	DECLARE_CLASS( CHL2MPGameRulesProxy, CGameRulesProxy );
 	DECLARE_NETWORKCLASS();
+	
+		#ifdef GAME_DLL
+		 DECLARE_DATADESC();
+	void	InputEnableAlien(inputdata_t &inputdata);
+	void	InputEndObjective(inputdata_t &inputdata);
+	void	InputEndAsset(inputdata_t &inputdata);
+	void	InputEndGina(inputdata_t &inputdata);
+	void	InputEndColette(inputdata_t &inputdata);
+	
+		void	InputLockSwitch(inputdata_t &inputdata);
+	void	InputUnlockSwitch(inputdata_t &inputdata);
+	COutputEvent m_OnEndGina;
+	COutputEvent m_OnEndColette;
+	COutputEvent m_OnEndObjective;
+	COutputEvent m_OnEndAsset;
+	#endif
 };
 
 class HL2MPViewVectors : public CViewVectors
@@ -144,9 +160,20 @@ public:
 
 	
 	bool	IsTeamplay( void ) { return m_bTeamPlayEnabled;	}
+//	bool	IsTeamplay(void) { return true; } //YOU GUESS IT, WE ARE IN A COOP GAME
 	void	CheckAllPlayersReady( void );
 
 	virtual bool IsConnectedUserInfoChangeAllowed( CBasePlayer *pPlayer );
+
+	bool	m_bDecaySwitchLocked; //Decay
+	
+		bool	m_bAlienMode; //DISABLE WEAPON PICKUP AND SORT OF THINGIES, probably allow attacking to scientists cuz why not :3
+	bool	IsAlienMode(void) { return m_bAlienMode; }
+	void	EnableAlien(void);
+	
+		bool	IsSwitchLocked(void) { return m_bDecaySwitchLocked; }
+	void	LockSwitch(void);
+	void	UnlockSwitch(void);
 	
 private:
 	

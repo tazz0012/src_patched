@@ -1,1 +1,1 @@
-devtools\bin\vpc.exe /hl2mp +game /mksln duality.sln
+devtools\bin\vpc.exe /hl2mp +game /mksln games.sln

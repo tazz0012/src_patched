@@ -1,0 +1,3 @@
+Entities removed from Server HL2MP 
+
+npc_strider

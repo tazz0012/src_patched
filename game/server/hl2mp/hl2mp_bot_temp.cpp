@@ -21,7 +21,7 @@
 void ClientPutInServer( edict_t *pEdict, const char *playername );
 void Bot_Think( CHL2MP_Player *pBot );
 
-#ifdef DEBUG
+//#ifdef DEBUG
 
 ConVar bot_forcefireweapon( "bot_forcefireweapon", "", 0, "Force bots with the specified weapon to fire." );
 ConVar bot_forceattack2( "bot_forceattack2", "0", 0, "When firing, use attack2." );
@@ -105,6 +105,8 @@ CBasePlayer *BotPutInServer( bool bFrozen, int iTeam )
 
 	return pPlayer;
 }
+
+
 
 //-----------------------------------------------------------------------------
 // Purpose: Run through all the Bots in the game and let them think.
@@ -431,5 +433,5 @@ void Bot_Think( CHL2MP_Player *pBot )
 
 
 
-#endif
+//#endif
 

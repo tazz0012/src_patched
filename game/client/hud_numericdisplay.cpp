@@ -152,6 +152,15 @@ void CHudNumericDisplay::PaintLabel( void )
 {
 	surface()->DrawSetTextFont(m_hTextFont);
 	surface()->DrawSetTextColor(GetFgColor());
+	if (GetLocalPlayerTeam() == 2){ //Gina
+		surface()->DrawSetTextColor(252, 251, 227, 255);
+		
+	}
+	else{ //Hack, Just In Case and For Colette
+		surface()->DrawSetTextColor(255, 0, 0, 255);
+		
+	}
+		//GetFgColor());
 	surface()->DrawSetTextPos(text_xpos, text_ypos);
 	surface()->DrawUnicodeString( m_LabelText );
 }
@@ -165,6 +174,14 @@ void CHudNumericDisplay::Paint()
 	{
 		// draw our numbers
 		surface()->DrawSetTextColor(GetFgColor());
+		if (GetLocalPlayerTeam() == 2){ //Gina
+			surface()->DrawSetTextColor(252, 251, 227, 255);
+			
+		}
+		else{ //Hack, Just In Case and For Colette
+			surface()->DrawSetTextColor(255, 0, 0, 255);
+			
+		}
 		PaintNumbers(m_hNumberFont, digit_xpos, digit_ypos, m_iValue);
 
 		// draw the overbright blur
@@ -180,6 +197,16 @@ void CHudNumericDisplay::Paint()
 				Color col = GetFgColor();
 				col[3] *= fl;
 				surface()->DrawSetTextColor(col);
+								//Color col = Color(0,255,0);//GetFgColor();
+									//col[3] *= fl;
+					if (GetLocalPlayerTeam() == 2){ //Gina
+					surface()->DrawSetTextColor(252, 251, 227, 255 * fl);
+					
+				}
+					else{ //Hack, Just In Case and For Colette
+						surface()->DrawSetTextColor(255, 0, 0, 255 * fl);
+						
+					}
 				PaintNumbers(m_hNumberGlowFont, digit_xpos, digit_ypos, m_iValue);
 			}
 		}
@@ -189,6 +216,15 @@ void CHudNumericDisplay::Paint()
 	if (m_bDisplaySecondaryValue)
 	{
 		surface()->DrawSetTextColor(GetFgColor());
+		
+			if (GetLocalPlayerTeam() == 2){ //Gina
+			surface()->DrawSetTextColor(252, 251, 227, 255);
+			
+		}
+			else{ //Hack, Just In Case and For Colette
+				surface()->DrawSetTextColor(255, 255, 0, 255);
+				
+			}
 		PaintNumbers(m_hSmallNumberFont, digit2_xpos, digit2_ypos, m_iSecondaryValue);
 	}
 

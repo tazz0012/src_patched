@@ -33,9 +33,9 @@
 	#include "hl2mp_gameinterface.h"
 	#include "hl2mp_cvars.h"
 
-#ifdef DEBUG	
+//#ifdef DEBUG	
 	#include "hl2mp_bot_temp.h"
-#endif
+//#endif
 
 extern void respawn(CBaseEntity *pEdict, bool fCopyCorpse);
 
@@ -66,6 +66,26 @@ BEGIN_NETWORK_TABLE_NOBASE( CHL2MPRules, DT_HL2MPRules )
 	#endif
 
 END_NETWORK_TABLE()
+
+ #ifdef GAME_DLL
+ BEGIN_DATADESC(CHL2MPGameRulesProxy)
+ DEFINE_INPUTFUNC(FIELD_VOID, "EnableAlien", InputEnableAlien),
+
+DEFINE_INPUTFUNC(FIELD_VOID, "EndGameObjective", InputEndObjective),
+DEFINE_INPUTFUNC(FIELD_VOID, "EndGameAsset", InputEndAsset),
+DEFINE_INPUTFUNC(FIELD_VOID, "EndGameGina", InputEndGina),
+DEFINE_INPUTFUNC(FIELD_VOID, "EndGameColette", InputEndColette),
+
+DEFINE_INPUTFUNC(FIELD_VOID, "LockSwitch", InputLockSwitch),
+DEFINE_INPUTFUNC(FIELD_VOID, "UnlockSwitch", InputUnlockSwitch),
+
+DEFINE_OUTPUT(m_OnEndGina, "OnEndGina"),
+DEFINE_OUTPUT(m_OnEndColette, "OnEndColette"),
+DEFINE_OUTPUT(m_OnEndObjective, "OnEndObjective"),
+DEFINE_OUTPUT(m_OnEndAsset, "OnEndAsset"),
+
+END_DATADESC()
+ #endif
 
 
 LINK_ENTITY_TO_CLASS( hl2mp_gamerules, CHL2MPGameRulesProxy );
@@ -157,6 +177,40 @@ static const char *s_PreserveEnts[] =
 	BEGIN_SEND_TABLE( CHL2MPGameRulesProxy, DT_HL2MPGameRulesProxy )
 		SendPropDataTable( "hl2mp_gamerules_data", 0, &REFERENCE_SEND_TABLE( DT_HL2MPRules ), SendProxy_HL2MPRules )
 	END_SEND_TABLE()
+	
+	void CHL2MPGameRulesProxy::InputEndGina(inputdata_t &inputdata)
+	 {
+		m_OnEndGina.FireOutput(this, this);
+		}
+	void CHL2MPGameRulesProxy::InputEndColette(inputdata_t &inputdata)
+		 {
+		m_OnEndColette.FireOutput(this, this);
+		}
+	void CHL2MPGameRulesProxy::InputEndAsset(inputdata_t &inputdata)
+		 {
+		m_OnEndAsset.FireOutput(this, this);
+		}
+	void CHL2MPGameRulesProxy::InputEndObjective(inputdata_t &inputdata)
+		 {
+		m_OnEndObjective.FireOutput(this, this);
+		}
+	void CHL2MPGameRulesProxy::InputEnableAlien(inputdata_t &inputdata)
+		{
+			//decay_alien.SetValue(1);
+			HL2MPRules()->EnableAlien();
+		Msg("EnableAlien");
+		}
+	
+		void CHL2MPGameRulesProxy::InputLockSwitch(inputdata_t &inputdata)
+		 {
+		Msg("LockSwitch");
+		HL2MPRules()->LockSwitch();
+		}
+	void CHL2MPGameRulesProxy::InputUnlockSwitch(inputdata_t &inputdata)
+		 {
+		Msg("UnlockSwitch");
+		HL2MPRules()->UnlockSwitch();
+		}
 #endif
 
 #ifndef CLIENT_DLL
@@ -181,6 +235,8 @@ char *sTeamNames[] =
 	"Spectator",
 	"Combine",
 	"Rebels",
+	"Gina",
+	"Colette",
 };
 
 CHL2MPRules::CHL2MPRules()
@@ -206,9 +262,31 @@ CHL2MPRules::CHL2MPRules()
 	m_bHeardAllPlayersReady = false;
 	m_bAwaitingReadyRestart = false;
 	m_bChangelevelDone = false;
+	
 
 #endif
+		 m_bDecaySwitchLocked = false;
+	m_bAlienMode = false;
+	
 }
+
+//DECAY
+void CHL2MPRules::UnlockSwitch(){
+	m_bDecaySwitchLocked = false;
+	
+}
+
+void CHL2MPRules::LockSwitch(){
+	m_bDecaySwitchLocked = true;
+	
+}
+
+void CHL2MPRules::EnableAlien(){
+	m_bAlienMode = true;
+}
+
+//#endif
+//}
 
 const CViewVectors* CHL2MPRules::GetViewVectors()const
 {
@@ -950,7 +1028,7 @@ CAmmoDef *GetAmmoDef()
 
 #else
 
-#ifdef DEBUG
+//#ifdef DEBUG
 
 	// Handler for the "bot" command.
 	void Bot_f()
@@ -972,9 +1050,10 @@ CAmmoDef *GetAmmoDef()
 	}
 
 
-	ConCommand cc_Bot( "bot", Bot_f, "Add a bot.", FCVAR_CHEAT );
+	//ConCommand cc_Bot( "bot", Bot_f, "Add a bot.", FCVAR_CHEAT );
+	ConCommand cc_Bot("bot", Bot_f, "Add a bot."/*, FCVAR_CHEAT */);
 
-#endif
+//#endif
 
 	bool CHL2MPRules::FShouldSwitchWeapon( CBasePlayer *pPlayer, CBaseCombatWeapon *pWeapon )
 	{		

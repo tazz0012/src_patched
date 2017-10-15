@@ -984,7 +984,7 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 			char szLocalized[100];
 			g_pVGuiLocalize->ConvertUnicodeToANSI( wszLocalized, szLocalized, sizeof(szLocalized) );
 
-			hudChat->Printf( CHAT_FILTER_JOINLEAVE, "%s", szLocalized );
+			//hudChat->Printf( CHAT_FILTER_JOINLEAVE, "%s", szLocalized );
 		}
 	}
 	else if ( Q_strcmp( "player_disconnect", eventname ) == 0 )
