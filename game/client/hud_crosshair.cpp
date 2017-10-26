@@ -262,9 +262,15 @@ void CHudCrosshair::Paint( void )
 #ifdef TF_CLIENT_DLL
 	Color clr( cl_crosshair_red.GetInt(), cl_crosshair_green.GetInt(), cl_crosshair_blue.GetInt(), 255 );
 	flPlayerScale = cl_crosshair_scale.GetFloat() / 32.0f;  // the player can change the scale in the options/multiplayer tab
-#else
-	Color clr = m_clrCrosshair;
 #endif
+	Color clr;
+	if (GetLocalPlayerTeam() == 2){ //Gina
+		clr = Color(252, 251, 227, 255);
+		
+	}
+	else{ //Hack, Just In Case and For Colette
+		clr = Color(255, 0, 0, 255);
+	}
 	float flWidth = flWeaponScale * flPlayerScale * (float)iTextureW;
 	float flHeight = flWeaponScale * flPlayerScale * (float)iTextureH;
 	int iWidth = (int)( flWidth + 0.5f );

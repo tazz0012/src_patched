@@ -1,0 +1,76 @@
+@include "base.fgd"
+@include "halflife2.fgd"
+@include "hl2mp.fgd"
+
+@PointClass base(PlayerClass, Angles) studio("models/editor/playerstart.mdl") = info_player_gina :
+	"Gina Cross's Start Position"
+[
+]
+
+@PointClass base(PlayerClass, Angles) studio("models/editor/playerstart.mdl") = info_player_colette :
+	"Colette Green's Start Position"
+[
+]
+
+@NPCClass base(BaseNPC) iconsprite("editor/obsolete.vmt") = npc_keller : "Dr. Keller" +
+	"TODO: Keller with 60 percent more elevator bugs"
+[
+]
+
+@NPCClass base(BaseNPC) iconsprite("editor/obsolete.vmt") = npc_rosenberg : "Dr. Rosenberg (A.k.a. Wheelchair Guy)" +
+	"TODO: Good job for doing previous stuff, let's hubuddyhadoo, new stuff.﻿"
+[
+]
+
+@NPCClass base(BaseNPC) iconsprite("editor/obsolete.vmt") = npc_security_guard : "Barney" +
+	"TODO: BMRF Security Team's Top Notch Workers.﻿"
+[
+]
+
+@NPCClass base(BaseNPC) iconsprite("editor/obsolete.vmt") = npc_scientist : "Scientist" +
+	"TODO: You and me will be an excelent team ... Fires Shotgun.﻿"
+[
+]
+
+
+@NPCClass base(BaseHeadcrab, Parentname) studio("models/Headcrabclassic.mdl") = npc_headcrab : "Headcrab" + 
+	"He Doesn't even have any hands"
+[
+]
+
+@NPCClass base(BaseNPC) studio("models/Zombie/Classic.mdl") = npc_zombie : "Zombie" +
+	"TODO: Add 3 types of zombies Scientist/Security Guard/Human Grunt"
+[
+]
+
+@NPCClass base(BaseNPC) studio("models/vortigaunt.mdl") = npc_vortigaunt : "Vortigaunt"
+[
+]
+
+@NPCClass base(BaseNPC) iconsprite("editor/obsolete.vmt") = npc_houndeye : "Houndeye"
+[
+]
+
+@NPCClass base(BaseNPC) iconsprite("editor/obsolete.vmt") = npc_aliengrunt : "Alien Grunt"
+[
+]
+
+@NPCClass base(BaseNPC) iconsprite("editor/obsolete.vmt") = npc_soldier : "Soldier" + 
+	"TODO: Asign types for these guys"
+[
+]
+
+@PointClass base(Targetname, Angles, BaseFadeProp) studio( "models/props_combine/health_charger001.mdl" ) = item_healthcharger : "Health Charger (Decay Edition)"
+[
+]
+
+@PointClass base(Targetname, Angles, BaseFadeProp) iconsprite("editor/obsolete.vmt") = item_recharge : "Suit Charger (Decay Edition)"
+[
+]
+
+@PointClass base(Targetname, Angles, BaseFadeProp) iconsprite("editor/obsolete.vmt") = item_eyescanner : "Retina Scanner (Decay Edition)"
+[
+	//Todo: Add Outputs
+]
+
+

@@ -405,7 +405,7 @@ void CNPC_Houndeye::Spawn()
 {
 	Precache( );
 
-	SetModel("models/houndeye.mdl");
+	SetModel("models/xenians/houndeye.mdl");
 	SetHullType(HULL_WIDE_SHORT);
 	SetHullSizeNormal();
 
@@ -439,7 +439,7 @@ void CNPC_Houndeye::Spawn()
 //=========================================================
 void CNPC_Houndeye::Precache()
 {
-	PrecacheModel("models/houndeye.mdl");
+	PrecacheModel("models/xenians/houndeye.mdl");
 
 	PrecacheScriptSound( "NPC_Houndeye.Anger1" );
 	PrecacheScriptSound( "NPC_Houndeye.Anger2" );
@@ -691,7 +691,8 @@ void CNPC_Houndeye::SonicAttack ( void )
 
 	CBaseEntity *pEntity = NULL;
 	// iterate on all entities in the vicinity.
-	for ( CEntitySphereQuery sphere( GetAbsOrigin(), HOUNDEYE_MAX_ATTACK_RADIUS ); pEntity = sphere.GetCurrentEntity(); sphere.NextEntity() )
+	//for ( CEntitySphereQuery sphere( GetAbsOrigin(), HOUNDEYE_MAX_ATTACK_RADIUS ); pEntity = sphere.GetCurrentEntity(); sphere.NextEntity() )
+	for ( CEntitySphereQuery sphere( GetAbsOrigin(), HOUNDEYE_MAX_ATTACK_RADIUS ); (pEntity = sphere.GetCurrentEntity()) != NULL; sphere.NextEntity() )
 	{
 		if (pEntity->Classify()	== CLASS_HOUNDEYE)
 		{
@@ -802,7 +803,7 @@ void CNPC_Houndeye::StartTask( const Task_t *pTask )
 			Vector vTargetPos = GetEnemyLKP();
 			vTargetPos.z	= GetFloorZ(vTargetPos);
 
-			if (GetNavigator()->SetRadialGoal(vTargetPos, random->RandomInt(50,500), 90, 175, m_bLoopClockwise))
+			if (GetNavigator()->SetRadialGoal(vTargetPos, /*random->RandomInt(50,500)*/RandomVector(50,500), 90, 175, m_bLoopClockwise, false))
 			{
 				TaskComplete();
 				return;

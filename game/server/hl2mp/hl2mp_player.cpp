@@ -583,7 +583,73 @@ void CHL2MP_Player::PreThink( void )
 			}
 		}
 }
-// }
+//COPIED FROM NOCLIP FIXUP
+//------------------------------------------------------------------------------
+// A small wrapper around SV_Move that never clips against the supplied entity.
+//------------------------------------------------------------------------------
+static bool TestEntityPosition ( CBasePlayer *pPlayer )
+{	
+	trace_t	trace;
+	UTIL_TraceEntity( pPlayer, pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(), MASK_PLAYERSOLID, &trace );
+	return (trace.startsolid == 0);
+}
+
+
+//------------------------------------------------------------------------------
+// Searches along the direction ray in steps of "step" to see if 
+// the entity position is passible.
+// Used for putting the player in valid space when toggling off noclip mode.
+//------------------------------------------------------------------------------
+static int FindPassableSpace( CBasePlayer *pPlayer, const Vector& direction, float step, Vector& oldorigin )
+{
+	int i;
+	for ( i = 0; i < 100; i++ )
+	{
+		Vector origin = pPlayer->GetAbsOrigin();
+		VectorMA( origin, step, direction, origin );
+		pPlayer->SetAbsOrigin( origin );
+		if ( TestEntityPosition( pPlayer ) )
+		{
+			VectorCopy( pPlayer->GetAbsOrigin(), oldorigin );
+			return 1;
+		}
+	}
+	return 0;
+}
+
+void CHL2MP_Player::FixSwitchClip( CBasePlayer *pPlayer){
+	Vector oldorigin = pPlayer->GetAbsOrigin();
+
+	if ( !TestEntityPosition( pPlayer ) )
+	{
+		Vector forward, right, up;
+		CPlayerState *pl = pPlayer->PlayerData();
+		AngleVectors ( pl->v_angle, &forward, &right, &up);
+		
+		// Try to move into the world
+		if ( !FindPassableSpace( pPlayer, forward, 1, oldorigin ) )
+		{
+			if ( !FindPassableSpace( pPlayer, right, 1, oldorigin ) )
+			{
+				if ( !FindPassableSpace( pPlayer, right, -1, oldorigin ) )		// left
+				{
+					if ( !FindPassableSpace( pPlayer, up, 1, oldorigin ) )	// up
+					{
+						if ( !FindPassableSpace( pPlayer, up, -1, oldorigin ) )	// down
+						{
+							if ( !FindPassableSpace( pPlayer, forward, -1, oldorigin ) )	// back
+							{
+								Msg( "Switch Stucked\n" );
+							}
+						}
+					}
+				}
+			}
+		}
+		pPlayer->SetAbsOrigin( oldorigin );
+	}
+}
+
 void CHL2MP_Player::Switch(void){
 	Msg("Decay Switch\n");
 			//if(!HL2MPRules()->IsSwitchLocked()){ //Ayeeeee
@@ -602,15 +668,9 @@ void CHL2MP_Player::Switch(void){
 		
 			if (pPlayer){
 			if (pPlayer->GetTeam() != GetTeam() && pPlayer->IsAlive()){ //Triple-Check Cuz Why Not?
-				Msg("Switch"); //TODO: Smooth Position Changes Out Like How Portal Did, I mean dont move the camera from interiors like wall's, just teleport it like in the GoldSRC
-				/*QAngle backupAngle = GetAbsAngles(); //Player 1's Positions
-				Vector backupOrigin = GetAbsOrigin();
-				QAngle backupAngle1 = pPlayer->GetAbsAngles(); //Player 2's Positions
-				Vector backupOrigin1 = pPlayer->GetAbsOrigin();
-				pPlayer->SetAbsAngles(backupAngle); //Mix em up
-				pPlayer->SetAbsOrigin(backupOrigin);
-				SetAbsOrigin(backupOrigin1);
-				SetAbsAngles(backupAngle1);*/
+				Msg("Switch"); 
+				//TODO: Smooth Position Changes Out Like How Portal Did, I mean dont move the camera from interiors like wall's, just teleport it like in the GoldSRC
+				//FIXED: It was caused by SetAbsAngles and Origin.
 				Vector backupOrigin = GetLocalOrigin();
 				QAngle backupAngle = GetLocalAngles();
 				Vector backupVelocity = GetLocalVelocity();
@@ -618,19 +678,41 @@ void CHL2MP_Player::Switch(void){
 				QAngle backupAngle1 = pPlayer->GetLocalAngles();
 				Vector backupVelocity1 = pPlayer->GetLocalVelocity();
 
+				if(GetFlags() & FL_DUCKING){
+						pPlayer->m_nButtons |= IN_DUCK;
+						pPlayer->AddFlag( FL_DUCKING );
+						pPlayer->m_Local.m_bDucked = true;
+						pPlayer->m_Local.m_bDucking = true;
+						pPlayer->m_Local.m_flDucktime = 0.0f;
+						pPlayer->SetViewOffset( VEC_DUCK_VIEW_SCALED( pPlayer ) );
+						pPlayer->SetCollisionBounds( VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX );
+					}
+					if(pPlayer->GetFlags() & FL_DUCKING ){
+						m_nButtons |= IN_DUCK;
+						AddFlag( FL_DUCKING );
+						m_Local.m_bDucked = true;
+						m_Local.m_bDucking = true;
+						m_Local.m_flDucktime = 0.0f;
+						SetViewOffset( VEC_DUCK_VIEW_SCALED( this ) );
+						SetCollisionBounds( VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX );
+					}
+
 				pPlayer->Teleport(&backupOrigin, &backupAngle, &backupVelocity);
 				Teleport(&backupOrigin1, &backupAngle1, &backupVelocity1);
 				
-					int backupTeam = GetTeamNumber(); //TODO: I can't remember why I add this but I think this was about Bonus Alien Levels
+				FixSwitchClip(this); //Just In Case
+				FixSwitchClip(pPlayer);
+
+				int backupTeam = GetTeamNumber();
 				int backupTeam1 = pPlayer->GetTeamNumber();
 				pPlayer->ChangeTeam(backupTeam);
 				ChangeTeam(backupTeam1);
 				
-										//IF SOMEONE SOLVED HOW TO CLONE ENTIRE AMMO AND WEAPON ARRAY TO ANOTHER PLAYER
-										//PLEASE CALL ME
+				//IF SOMEONE SOLVED HOW TO CLONE ENTIRE AMMO AND WEAPON ARRAY TO ANOTHER PLAYER
+				//PLEASE CALL ME
 					
 					
-					return; //:(
+					return;
 				
 			}
 			
@@ -1414,12 +1496,12 @@ CBaseEntity* CHL2MP_Player::EntSelectSpawnPoint( void )
 	{
 		if ( GetTeamNumber() == TEAM_COMBINE )
 		{
-			pSpawnpointName = "info_player_combine";
+			pSpawnpointName = "info_player_gina"; //WHITE TEAM
 			pLastSpawnPoint = g_pLastCombineSpawn;
 		}
 		else if ( GetTeamNumber() == TEAM_REBELS )
 		{
-			pSpawnpointName = "info_player_rebel";
+			pSpawnpointName = "info_player_colette"; //RED TEAM
 			pLastSpawnPoint = g_pLastRebelSpawn;
 		}
 
