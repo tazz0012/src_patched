@@ -67,13 +67,13 @@ ConVar cl_pitchup( "cl_pitchup", "89", FCVAR_CHEAT );
 #if defined( CSTRIKE_DLL )
 ConVar cl_sidespeed( "cl_sidespeed", "400", FCVAR_CHEAT );
 ConVar cl_upspeed( "cl_upspeed", "320", FCVAR_ARCHIVE|FCVAR_CHEAT );
-ConVar cl_forwardspeed( "cl_forwardspeed", "400", FCVAR_ARCHIVE|FCVAR_CHEAT );
-ConVar cl_backspeed( "cl_backspeed", "400", FCVAR_ARCHIVE|FCVAR_CHEAT );
+ConVar cl_forwardspeed( "cl_forwardspeed", "490", FCVAR_ARCHIVE|FCVAR_CHEAT );
+ConVar cl_backspeed( "cl_backspeed", "490", FCVAR_ARCHIVE|FCVAR_CHEAT );
 #else
-ConVar cl_sidespeed( "cl_sidespeed", "450", FCVAR_REPLICATED | FCVAR_CHEAT );
-ConVar cl_upspeed( "cl_upspeed", "320", FCVAR_REPLICATED | FCVAR_CHEAT );
-ConVar cl_forwardspeed( "cl_forwardspeed", "450", FCVAR_REPLICATED | FCVAR_CHEAT );
-ConVar cl_backspeed( "cl_backspeed", "450", FCVAR_REPLICATED | FCVAR_CHEAT );
+ConVar cl_sidespeed( "cl_sidespeed", "490", FCVAR_REPLICATED | FCVAR_CHEAT );
+ConVar cl_upspeed( "cl_upspeed", "380", FCVAR_REPLICATED | FCVAR_CHEAT );
+ConVar cl_forwardspeed( "cl_forwardspeed", "490", FCVAR_REPLICATED | FCVAR_CHEAT );
+ConVar cl_backspeed( "cl_backspeed", "490", FCVAR_REPLICATED | FCVAR_CHEAT );
 #endif // CSTRIKE_DLL
 ConVar lookspring( "lookspring", "0", FCVAR_ARCHIVE );
 ConVar lookstrafe( "lookstrafe", "0", FCVAR_ARCHIVE );

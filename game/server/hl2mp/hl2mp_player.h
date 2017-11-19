@@ -94,6 +94,7 @@ public:
 	void NoteWeaponFired( void );
 
 	void Switch(void);
+	void FixSwitchClip( CBasePlayer *pPlayer );
 	void ResetAnimation( void );
 	void SetPlayerModel( void );
 	void SetPlayerTeamModel( void );

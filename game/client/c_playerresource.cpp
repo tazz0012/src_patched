@@ -65,11 +65,11 @@ C_PlayerResource::C_PlayerResource()
 		m_Colors[i] = COLOR_GREY;
 	}
 
-#ifdef HL2MP
+
 	m_Colors[TEAM_COMBINE] = COLOR_CREAM; //COLOR_BLUE;
 	m_Colors[TEAM_REBELS] = COLOR_RED;
 	m_Colors[TEAM_UNASSIGNED] = COLOR_YELLOW;
-#endif
+
 
 	g_PR = this;
 }

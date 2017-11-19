@@ -159,15 +159,15 @@ public:
 	void PlayerKilled( CBasePlayer *pVictim, const CTakeDamageInfo &info );
 
 	
-	bool	IsTeamplay( void ) { return m_bTeamPlayEnabled;	}
-//	bool	IsTeamplay(void) { return true; } //YOU GUESS IT, WE ARE IN A COOP GAME
+	//bool	IsTeamplay( void ) { return m_bTeamPlayEnabled;	} Why?
+	bool	IsTeamplay(void) { return true; } //YOU GUESS IT, WE ARE IN A COOP GAME
 	void	CheckAllPlayersReady( void );
 
 	virtual bool IsConnectedUserInfoChangeAllowed( CBasePlayer *pPlayer );
 
 	bool	m_bDecaySwitchLocked; //Decay
 	
-		bool	m_bAlienMode; //DISABLE WEAPON PICKUP AND SORT OF THINGIES, probably allow attacking to scientists cuz why not :3
+	bool	m_bAlienMode; //DISABLE WEAPON PICKUP AND SORT OF THINGIES, probably allow attacking to scientists cuz why not :3
 	bool	IsAlienMode(void) { return m_bAlienMode; }
 	void	EnableAlien(void);
 	

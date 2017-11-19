@@ -160,7 +160,8 @@ void CHudNumericDisplay::PaintLabel( void )
 		surface()->DrawSetTextColor(255, 0, 0, 255);
 		
 	}
-		//GetFgColor());
+	
+	//GetFgColor());
 	surface()->DrawSetTextPos(text_xpos, text_ypos);
 	surface()->DrawUnicodeString( m_LabelText );
 }
@@ -222,13 +223,14 @@ void CHudNumericDisplay::Paint()
 			
 		}
 			else{ //Hack, Just In Case and For Colette
-				surface()->DrawSetTextColor(255, 255, 0, 255);
+				surface()->DrawSetTextColor(255, 0, 0, 255);
 				
 			}
 		PaintNumbers(m_hSmallNumberFont, digit2_xpos, digit2_ypos, m_iSecondaryValue);
 	}
 
 	PaintLabel();
+	SetPaintBackgroundEnabled(false);
 }
 
 
